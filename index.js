@@ -1,23 +1,25 @@
 const { maxHeaderSize } = require("http")
 const path = require("path")
 
-const laberinto = 
+const laberinto = [
+    [ "S" , "." , "#" , "#" , "#"],
+    [ "#" , "." , "#" , "#" , "G"],
+    [ "." , "." , "." , "#" , "."],
+    [ "." , "#" , "." , "." , "."],
+    [ "." , "#" , "." , "#" , "."]
+]
 
-[ "S" , "." , "#" , "#" , "#"]
-[ "#" , "." , "#" , "#" , "G"]
-[ "." , "." , "." , "#" , "."]
-[ "." , "#" , "." , "." , "."]
-[ "." , "#" , "." , "#" , "."]
-
-// function labe(x,y){
-//     if(x,y outside maze) return false
-//     if(x,y is goal) return true
-//     if(x,y not open) return false
-//     mark x,y as part of solution path
-//     if(labe(NorthNorth of x,y) == true) return true
-//     if(labe(EastEast of x,y) == true) return true
-//     if(labe(SouthSouth of x,y) == true) return true
-//     if(labe(WestWest of x,y) == true) return true
-//     unmark x,y as part of solution path
-//     return false
-// }
+function labe (y,x){
+    if(y >= laberinto.length || y < 0) return false
+    if(x >= laberinto[y].length || x < 0 ) return false
+    if(laberinto[y][x] == "+") return false
+    if(laberinto[y][x] == "#") return false
+    if(laberinto[y][x] == "S") return false
+    if(laberinto[y][x] == "G") return true
+    laberinto[y][x] = "+"
+    if(labe(y-1,x)) return true
+    if(labe(y,x-1)) return true
+    if(labe(y+1,x)) return true
+    if(labe(y,x+1)) return true
+    laberinto[y][x] = "."
+}
