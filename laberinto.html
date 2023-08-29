@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!---<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -96,7 +96,6 @@
 
 
         <div class="eraser" onclick="setEraser()"></div>
-        <!-- Agrega más colores aquí si lo deseas -->
     </div>
 
     <form action="/procesar" method="post">
@@ -137,5 +136,66 @@
             }
         }
     </script>
+</body>
+</html>--->
+
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(
+                5,
+                30px
+            ); 
+            grid-template-rows: repeat(
+                5,
+                30px
+            ); 
+    grid-template-columns: repeat(auto-fill, 30px); /* Ancho de las celdas */
+    grid-gap: 1px; /* Espacio entre celdas */
+    border: 1px solid black;
+  }
+  
+  .cell {
+    width: 30px;
+    height: 30px;
+    text-align: center;
+    line-height: 30px;
+    font-size: 20px;
+  }
+  
+  .s { background-color: blue; color: white; }
+  .hash { background-color: black; color: white; }
+  .dot { background-color: white; }
+  .g { background-color: green; }
+</style>
+</head>
+<body>
+
+<div class="grid" id="grid"></div>
+
+<script>
+  const symbolArray = [
+    ['#', '.', 's', 'g', '#'],
+    ['.', 's', 's', '.', '.'],
+    ['.', '.', '.', 's', 'g'],
+    ['g', 's', '#', 's', '#']
+  ];
+
+  const gridContainer = document.getElementById('grid');
+
+  symbolArray.forEach(row => {
+    row.forEach(symbol => {
+      const cell = document.createElement('div');
+      cell.classList.add('cell');
+      cell.classList.add(symbol);
+      cell.textContent = symbol;
+      gridContainer.appendChild(cell);
+    });
+  });
+</script>
+
 </body>
 </html>
