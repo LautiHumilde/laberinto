@@ -1,6 +1,3 @@
-const { maxHeaderSize } = require("http")
-const path = require("path")
-
 const laberinto = [
     [ "S" , "." , "#" , "#" , "#"],
     [ "#" , "." , "#" , "#" , "G"],
@@ -17,9 +14,14 @@ function labe (y,x){
     if(laberinto[y][x] == "S") return false
     if(laberinto[y][x] == "G") return true
     laberinto[y][x] = "+"
-    if(labe(y-1,x)) return true
+    if(labe(y-1,x) == true ) return true
     if(labe(y,x-1)) return true
     if(labe(y+1,x)) return true
     if(labe(y,x+1)) return true
     laberinto[y][x] = "."
+    return false
 }
+
+laberinto.forEach(element => {
+    console.log(element);
+});
