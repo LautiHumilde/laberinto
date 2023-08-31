@@ -3,40 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Matrix Display</title>
+    <title>laberinto</title>
     <style>
         table {
             border-collapse: collapse;
         }
         td {
             border: 1px solid black;
-            width: 20px; /* Cambia el ancho según tus necesidades */
-            height: 10px; /* Cambia el alto según tus necesidades */
+            width: 20px;
+            height: 10px;
             border: 1px solid black;
             text-align: center;
         }
-        /* Asignar colores según los valores de la matriz */
-        td[data-value="S"] {
+        td[sombolo="S"] {
             background-color: rgb(0, 255, 0);
         }
-        td[data-value="G"] {
+        td[sombolo="G"] {
             background-color: blue;
         }
-        td[data-value="#"] {
+        td[sombolo="#"] {
             background-color: rgb(0, 0, 0);
         }
-        td[data-value="."] {
+        td[sombolo="."] {
             background-color: rgb(255, 255, 255);
         }
-        td[data-value="+"] {
+        td[sombolo="+"] {
             background-color: rgb(255, 0, 0);
         }
     </style>
 </head>
 <body>
     <table>
-        <tbody id="matrix-body">
-            <!-- La matriz se generará aquí utilizando JavaScript -->
+        <tbody id="matrizdemilaberinto">
         </tbody>
     </table>
 
@@ -81,27 +79,23 @@
             if (laberinto[i][j] === 'S') {
                 if (labe(laberinto, i, j)) {
                     console.log('Laberinto resuelto:');
-                    laberinto.forEach(element => {
-                        console.log(element);
-                    });
                 } else {
                     console.log('No se pudo resolver el laberinto.');
                 }
             }
         }
     }
-        var matrixBody = document.getElementById('matrix-body');
+        var matriz = document.getElementById('matrizdemilaberinto');
 
-        // Generar la tabla utilizando la matriz de JavaScript
         for (var i = 0; i < laberinto.length; i++) {
-            var row = document.createElement('tr');
+            var fila = document.createElement('tr');
             for (var j = 0; j < laberinto[i].length; j++) {
-                var cell = document.createElement('td');
-                cell.setAttribute('data-value', laberinto[i][j]); // Agregar atributo para el valor
-                cell.textContent = laberinto[i][j]; // Mostrar el valor en la celda
-                row.appendChild(cell);
+                var celda = document.createElement('td');
+                celda.setAttribute('sombolo', laberinto[i][j]);
+                celda.textContent = laberinto[i][j];
+                fila.appendChild(celda);
             }
-            matrixBody.appendChild(row);
+            matriz.appendChild(fila);
         }
     </script>
 </body>
