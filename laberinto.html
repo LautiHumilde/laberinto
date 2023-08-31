@@ -1,202 +1,123 @@
-<!---<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Grilla 10x10</title>
+    <title>Matrix Display</title>
     <style>
-        .my-image {
-            position: relative;
-            top: 0px;
-            left: -50px; 
-            width: 200px;
-            height: 200px; 
+        table {
+            border-collapse: collapse;
         }
-
-        body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 1;
-            background-color: #f0f0f0;
+        td {
+            border: 1px solid black;
+            width: 20px; /* Cambia el ancho según tus necesidades */
+            height: 10px; /* Cambia el alto según tus necesidades */
+            border: 1px solid black;
+            text-align: center;
         }
-        .grid-container {
-            display: grid;
-            grid-template-columns: repeat(
-                5,
-                30px
-            ); 
-            grid-template-rows: repeat(
-                5,
-                30px
-            ); 
-            gap: 1px; 
-            background-color: #fff; 
+        /* Asignar colores según los valores de la matriz */
+        td[data-value="S"] {
+            background-color: rgb(0, 255, 0);
         }
-
-        .grid-item {
-            background-color: #ccc;
-            width: 100%;
-            height: 100%;
-            cursor: pointer;
-            border: 20px, solid #000;
+        td[data-value="G"] {
+            background-color: blue;
         }
-
-        
-        .grid-item.active {
-            background-color: #ff000000; 
-            border: 20px, solid #000;
+        td[data-value="#"] {
+            background-color: rgb(0, 0, 0);
         }
-
-        .color-palette {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-top: 10px;
-            left: 10px;
-            top: 10px;
-            position: relative; 
-            float: 10;
+        td[data-value="."] {
+            background-color: rgb(255, 255, 255);
         }
-
-        .color {
-            width: 50px;
-            height: 50px;
-            margin: 10px;
-            cursor: pointer;
-            border-radius: 10px;
+        td[data-value="+"] {
+            background-color: rgb(255, 0, 0);
         }
     </style>
 </head>
 <body>
-
-    <div class="grid-container" id="grid-container">
-        
-    </div>
-
-    <div class="color-palette" id="color-palette">
-
-        <div
-            class="color"
-            style="background-color: #000000"
-            onclick="setColor('#000000')"
-        ></div>
-        <div
-            class="color"
-            style="background-color: #2bff00"
-            onclick="setColor('#2bff00')"
-        ></div>
-        <div
-            class="color"
-            style="background-color: #1900ff"
-            onclick="setColor('#1900ff')"
-        ></div>
-
-
-        <div class="eraser" onclick="setEraser()"></div>
-    </div>
-
-    <form action="/procesar" method="post">
-        <button type="submit">iniciar laberinto</button>
-    </form>
+    <table>
+        <tbody id="matrix-body">
+            <!-- La matriz se generará aquí utilizando JavaScript -->
+        </tbody>
+    </table>
 
     <script>
+        var laberinto = [
+    ["S",".",".",".","#",".","#",".","#",".",".",".",".",".","#",".","#",".",".","#"],
+    [".","#","#",".","#",".","#",".","#","#","#",".","#","#",".",".",".","#","#","."],
+    ["#",".","#",".","#",".","#",".","#","#",".",".",".",".",".","#",".",".",".","#"],
+    [".",".",".",".",".",".",".",".","#",".",".","#","#","#",".",".","#",".",".","."],
+    ["#","#","#","#",".","#",".","#",".","#",".",".",".",".","#",".",".","#","#","."],
+    [".",".",".",".",".","#",".",".",".",".","#",".","#",".","#",".","#","#",".","."],
+    [".",".","#","#",".","#","#",".","#",".","#",".","#",".",".","#",".",".","#","."],
+    [".","#",".","#",".","#",".",".","#",".","#",".","#",".","#",".",".","#",".","."],
+    [".",".","#",".",".","#",".","#",".",".",".",".",".","#",".",".","#","#","#","."],
+    [".",".",".",".",".","#",".","#",".","#",".",".","#",".",".",".",".",".",".","."],
+    ["#","#","#","#","#",".",".","#",".","#",".","#",".",".","#","#","#","#","#","#"],
+    [".",".",".","#",".",".",".",".",".",".","#",".",".","#",".",".",".",".",".","."],
+    [".","#",".",".",".","#",".","#","#","#","#",".","#","#",".","#","#","#","#","."],
+    [".","#",".","#","#","#",".","#",".",".",".",".",".","#",".",".",".","#","#","."],
+    [".","#",".","#","#","#",".","#",".","#",".","#",".","#",".",".","#",".",".","."],
+    [".",".",".",".",".","#","#",".",".","#",".","#",".","#",".",".","#",".","#","#"],
+    ["#","#","#","#","#","#",".",".","#","#",".","#",".","#",".","#",".",".","#","G"],
+    [".",".",".",".",".",".",".","#","#","#",".","#","#","#",".","#",".","#",".","."],
+    [".","#",".",".","#",".","#",".","#","#",".",".",".",".",".","#",".",".",".","#"],
+    ["#",".",".","#",".",".",".",".",".","#",".","#","#","#",".",".","#",".","#","#"]
+]
 
-        let currentColor = "#ff0000"; 
-        let eraserMode = false; 
-
-        function setColor(color) {
-            currentColor = color;
-            eraserMode = false; 
+        function labe(laberinto, x, y) {
+            if (x < 0 || y < 0 || x >= laberinto.length || y >= laberinto[0].length) {
+            return false;
         }
-        
-        
-        function setEraser() {
-            eraserMode = !eraserMode;
+
+        const celda = laberinto[x][y];
+        if (celda === '#' || celda === '+') {
+            return false;
         }
 
-        
-        const gridContainer = document.getElementById("grid-container");
+        if (celda === 'G') {
+            return true;
+        }
 
-        for (let i = 0; i < 5; i++) {
-            for (let j = 0; j < 5; j++) {
-                const cell = document.createElement("div");
-                cell.classList.add("grid-item");
-                gridContainer.appendChild(cell);
+        laberinto[x][y] = '+';
 
-                cell.addEventListener("click", () => {
-                    if (eraserMode) {
-                        cell.style.backgroundColor = "#ccc"; 
-                    } else {
-                        cell.style.backgroundColor = currentColor;
-                    }
-                });
+        if (labe(laberinto, x , y - 1) ||
+            labe(laberinto, x - 1 , y) ||
+            labe(laberinto, x , y + 1) ||
+            labe(laberinto, x + 1 , y)) {
+                return true;
+        }
+
+        laberinto[x][y] = '.';
+            return false;
+    }
+
+    for (let i = 0; i < laberinto.length; i++) {
+        for (let j = 0; j < laberinto[0].length; j++) {
+            if (laberinto[i][j] === 'S') {
+                if (labe(laberinto, i, j)) {
+                    console.log('Laberinto resuelto:');
+                    laberinto.forEach(element => {
+                        console.log(element);
+                    });
+                } else {
+                    console.log('No se pudo resolver el laberinto.');
+                }
             }
+        }
+    }
+        var matrixBody = document.getElementById('matrix-body');
+
+        // Generar la tabla utilizando la matriz de JavaScript
+        for (var i = 0; i < laberinto.length; i++) {
+            var row = document.createElement('tr');
+            for (var j = 0; j < laberinto[i].length; j++) {
+                var cell = document.createElement('td');
+                cell.setAttribute('data-value', laberinto[i][j]); // Agregar atributo para el valor
+                cell.textContent = laberinto[i][j]; // Mostrar el valor en la celda
+                row.appendChild(cell);
+            }
+            matrixBody.appendChild(row);
         }
     </script>
 </body>
-</html>--->
-
-<!DOCTYPE html>
-<html>
-<head>
-<style>
-  .grid {
-    display: grid;
-    grid-template-columns: repeat(
-                5,
-                30px
-            ); 
-            grid-template-rows: repeat(
-                5,
-                30px
-            ); 
-    grid-template-columns: repeat(auto-fill, 30px); /* Ancho de las celdas */
-    grid-gap: 1px; /* Espacio entre celdas */
-    border: 1px solid black;
-  }
-  
-  .cell {
-    width: 30px;
-    height: 30px;
-    text-align: center;
-    line-height: 30px;
-    font-size: 20px;
-  }
-  
-  .s { background-color: blue; color: white; }
-  .hash { background-color: black; color: white; }
-  .dot { background-color: white; }
-  .g { background-color: green; }
-</style>
-</head>
-<body>
-
-<div class="grid" id="grid"></div>
-
-<script>
-  const symbolArray = [
-    ['#', '.', 's', 'g', '#'],
-    ['.', 's', 's', '.', '.'],
-    ['.', '.', '.', 's', 'g'],
-    ['g', 's', '#', 's', '#']
-  ];
-
-  const gridContainer = document.getElementById('grid');
-
-  symbolArray.forEach(row => {
-    row.forEach(symbol => {
-      const cell = document.createElement('div');
-      cell.classList.add('cell');
-      cell.classList.add(symbol);
-      cell.textContent = symbol;
-      gridContainer.appendChild(cell);
-    });
-  });
-</script>
-
-</body>
 </html>
-
